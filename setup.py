@@ -7,7 +7,7 @@ setup(
     name='qase-helpers',
     version='0.0.1',
     packages=find_packages(),
-    python_requires='>=3.9',
+    python_requires='>=3.10',
     install_requires=[
         'qase-api-client',
     ],
@@ -28,7 +28,7 @@ setup(
         'Topic :: Software Development :: Quality Assurance',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3 :: Only',
     ],
     keywords='qase junit',
