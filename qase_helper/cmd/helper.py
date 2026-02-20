@@ -2,6 +2,7 @@ import argparse
 import logging
 import sys
 
+from qase_helper.lib.analyze_junit import analyze
 from qase_helper.lib.config import Config
 from qase_helper.lib.convert import Converter
 from qase_helper.lib.process_junit_report import processing
@@ -22,6 +23,18 @@ def truncate(args, config):
     LOG.info(f"Output JUnit report file: {args.output}")
     LOG.info(f"Remove skipped: {args.remove_skipped}")
     processing(args.input, args.output, remove_skipped=args.remove_skipped)
+
+
+def analyze_cmd(args, config):
+    LOG.info('========== Run analyze ==========')
+    LOG.info(f"JUnit report: {args.junit}")
+    LOG.info(f"Known issues YAML: {args.yaml}")
+    unmatched = analyze(args.junit, args.yaml)
+    if unmatched:
+        LOG.error("Tests with unmatched failures:")
+        for ft in unmatched:
+            LOG.error(f" - {ft.name}")
+        sys.exit(2)
 
 
 def convert(args, config):
@@ -74,6 +87,20 @@ def main():
         help='Remove skipped test cases from report.'
     )
     parser_a.set_defaults(func=truncate)
+    # =================================================================================================================
+    parser_analyze = subparsers.add_parser(
+        'analyze',
+        help='Check JUnit failures against known-issues YAML; exit 1 if any failure has no matching known issue.',
+    )
+    parser_analyze.add_argument(
+        'junit', metavar='JUnit report', type=str,
+        help='Path to the JUnit report (.xml) file.',
+    )
+    parser_analyze.add_argument(
+        'yaml', metavar='Known issues YAML', type=str,
+        help='Path to the known-issues YAML file.',
+    )
+    parser_analyze.set_defaults(func=analyze_cmd)
     # =================================================================================================================
     parser_b = subparsers.add_parser('convert',
                                      help='Convert name (string) to ID (int) for some Qase types: plan, milestone, '
