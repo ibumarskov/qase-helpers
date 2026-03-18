@@ -6,14 +6,18 @@ Schema:
     - title: <QASE_TEST_NAME>   # must match JUnit testcase name
       errors: |
         <expected error log snippet>
+      # or errors as a list (all snippets must appear in the test's error output):
+      errors:
+        - Timed out after 360
+        - /path/to/file.go:161
       defects: <QASE_DEFECT_ID>
 
 Matching: A failed test matches a known issue iff (1) test name equals the
-issue's title, and (2) the issue's errors string is contained in the test's
-error output. Comparison uses multiline-aware normalization: only line endings
-are normalized (to \\n) and outer whitespace stripped, so a full trace in YAML
-can match the failure output. If a known issue has empty errors, matching is
-by title only. Duplicate titles in YAML: any match wins.
+issue's title, and (2) all of the issue's errors are contained in the test's
+error output. When errors is a string, it is treated as one snippet; when
+errors is a list, every string in the list must appear in the test's log.
+Comparison uses multiline-aware normalization. If errors is empty, matching
+is by title only. Duplicate titles in YAML: any match wins.
 """
 
 import re
@@ -25,9 +29,9 @@ import yaml
 
 @dataclass
 class KnownIssue:
-    """A known issue entry: test title, expected error snippet, defect ID."""
+    """A known issue entry: test title, expected error snippet(s), defect ID."""
     title: str
-    errors: str
+    errors: list[str]  # one or more snippets; all must appear in test error output
     defects: str
 
 
@@ -52,12 +56,22 @@ def _normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", text.strip())
 
 
+def _errors_to_list(errors: str | list | None) -> list[str]:
+    """Convert errors field (string or list) to a list of non-empty strings."""
+    if errors is None:
+        return []
+    if isinstance(errors, list):
+        return [str(s).strip() for s in errors if s and str(s).strip()]
+    s = str(errors).strip()
+    return [s] if s else []
+
+
 def load_known_issues(path: str | Path) -> list[KnownIssue]:
     """
     Load known issues from a YAML file.
 
     Expects top-level key 'tests' with a list of dicts, each having
-    'title', 'errors' (optional, default ''), and 'defects'.
+    'title', 'errors' (optional: string or list of strings), and 'defects'.
     """
     path = Path(path)
     with open(path, encoding="utf-8") as f:
@@ -69,14 +83,14 @@ def load_known_issues(path: str | Path) -> list[KnownIssue]:
         if not isinstance(entry, dict):
             continue
         title = entry.get("title")
-        errors = entry.get("errors", "") or ""
+        errors = _errors_to_list(entry.get("errors"))
         defects = entry.get("defects", "")
         if title is None:
             continue
         result.append(
             KnownIssue(
                 title=str(title).strip(),
-                errors=str(errors).strip() if errors else "",
+                errors=errors,
                 defects=str(defects).strip() if defects else "",
             )
         )
@@ -93,20 +107,23 @@ def matches_known_issue(
     Return True if this failed test matches the given known issue.
 
     - Title must match exactly (after stripping).
-    - If issue.errors is non-empty, it must be contained in the test's
-      error_text. Comparison is multiline-aware: only line endings are
-      normalized to \\n (and outer whitespace stripped), so a full trace
-      in YAML can match the failure output. If issue.errors is empty,
-      matching is by title only.
+    - If issue.errors is non-empty, every snippet in the list must be
+      contained in the test's error_text. Comparison is multiline-aware.
+      If issue.errors is empty, matching is by title only.
     """
     if (test_name or "").strip() != (issue.title or "").strip():
         return False
     if not issue.errors:
         return True
     if normalize:
-        expected = _normalize_line_endings(issue.errors)
         actual = _normalize_line_endings(error_text)
     else:
-        expected = issue.errors
         actual = error_text
-    return expected in actual
+    for snippet in issue.errors:
+        if normalize:
+            expected = _normalize_line_endings(snippet)
+        else:
+            expected = snippet
+        if expected not in actual:
+            return False
+    return True
