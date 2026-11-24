@@ -1,0 +1,56 @@
+# Example qase-helper configuration.
+#
+# Copy to ./qase-helper.yaml (loaded automatically if present) or point to it with
+# --config / -c PATH or the QASE_HELPER_CONFIG environment variable.
+#
+# Every value can also be set with a CLI option or an environment variable.
+# Precedence: CLI option > environment variable > this file > built-in default.
+# All keys are optional; unknown keys are rejected.
+
+qase:
+  # API token. Prefer the QASE_HELPER_TOKEN (or QASE_TOKEN) environment variable
+  # over storing secrets in a file.
+  token: null
+  # Project code, e.g. "DEMO".                        env: QASE_HELPER_PROJECT
+  project: "DEMO"
+  # API URL; null means Qase SaaS (https://api.qase.io/v1).   env: QASE_HELPER_API_HOST
+  api_host: null
+  # Web UI URL, used for the run link printed by `report`. null means Qase SaaS
+  # (https://app.qase.io), unless api_host is set: then no link is printed.  env: QASE_HELPER_APP_URL
+  app_url: null
+
+junit:
+  # How JUnit tests are mapped to Qase cases; used by `report` and `cases create`.
+  # YAML file mapping full test names to Qase case IDs (see case-ids.example.yaml).
+  # Required for every test whose name is longer than max_length.  env: QASE_HELPER_CASE_ID_MAP
+  case_id_map_file: "./case-ids.yaml"
+  # Max test name length accepted by Qase (1-255).    env: QASE_HELPER_MAX_LENGTH
+  max_length: 255
+  # Ignore skipped tests.                              env: QASE_HELPER_EXCLUDE_SKIPPED
+  exclude_skipped: false
+
+report:
+  # Title of the run created by `report`.             env: QASE_HELPER_RUN_TITLE
+  run_title: "Nightly regression"
+  # Description of the run created by `report` (up to 10000 characters).  env: QASE_HELPER_RUN_DESCRIPTION
+  run_description: null
+  # Report into this existing run instead of creating a new one.   env: QASE_HELPER_RUN_ID
+  run_id: null
+  # Milestone / environment / plan of the created run: a name or a numeric ID.
+  # Names are resolved to IDs through the Qase API.
+  milestone: "Release 2.5"                          # env: QASE_HELPER_MILESTONE
+  environment: "staging"                            # env: QASE_HELPER_ENVIRONMENT
+  plan: null                                        # env: QASE_HELPER_PLAN
+  # Complete the run after reporting (only runs created by `report`).  env: QASE_HELPER_COMPLETE_RUN
+  complete_run: true
+
+cases:
+  # Suite for cases created by `cases create`: a name or a numeric ID;
+  # null creates them at the project root.            env: QASE_HELPER_SUITE
+  suite: null
+
+logging:
+  # DEBUG, INFO, WARNING or ERROR. Logs go to stderr.  env: QASE_HELPER_LOG_LEVEL
+  level: "WARNING"
+  # Also write logs to this file; null disables it.    env: QASE_HELPER_LOG_FILE
+  file: null
