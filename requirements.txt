@@ -1,4 +1,0 @@
-setuptools
-flake8
-pyyaml
-qase-api-client<2.0.0

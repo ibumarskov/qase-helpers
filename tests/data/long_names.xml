@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="TestSuite" tests="3">
+    <testcase classname="TestSuite" name="TestSuite.test_short" time="0.5"/>
+    <testcase classname="TestSuite" name="TestSuite.test_some_very_long_descriptive_name_that_exceeds_the_qase_name_limit_by_a_lot" time="1.2">
+      <failure message="assertion failed">Traceback: expected 1, got 2</failure>
+    </testcase>
+    <testcase classname="TestSuite" name="TestSuite.test_skipped" time="0"><skipped/></testcase>
+  </testsuite>
+</testsuites>

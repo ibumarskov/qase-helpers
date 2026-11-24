@@ -1,0 +1,60 @@
+[project]
+name = "qase-helper"
+version = "0.1.0"
+description = "CLI for reporting JUnit test results to Qase and managing Qase test runs."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Ilya Bumarskov", email = "ibumarskov@gmail.com" }]
+keywords = ["qase", "junit", "testing", "test-management"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Topic :: Software Development :: Quality Assurance",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Environment :: Console",
+]
+dependencies = [
+    "typer>=0.12",
+    "pyyaml>=6.0,<7",
+    "qase-api-client>=2.0.3,<3",  # Qase API v1 client (qase.api_client_v1)
+    "pydantic-settings>=2.4,<3",
+]
+
+[project.urls]
+Homepage = "https://github.com/ibumarskov/qase-helpers"
+
+[project.scripts]
+qase-helper = "qase_helper.cli.main:app"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-mock>=3.14",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+exclude = ["build", "dist", ".venv", ".tox"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["qase_helper"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Argument", "typer.Option"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

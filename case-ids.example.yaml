@@ -1,0 +1,14 @@
+# Example test-name -> Qase case-ID map for `qase-helper report --case-id-map`.
+#
+# Tests listed here are reported against the given case ID instead of being
+# matched by title. Qase limits case titles to 255 characters, so every test whose
+# full name is longer than `max_length` MUST be listed here, otherwise `report`
+# fails before sending anything to Qase.
+#
+# `title` is the full, unmodified JUnit testcase `name`. Titles must be unique.
+
+cases:
+  - title: "TestSuite.test_some_very_long_descriptive_name_that_exceeds_the_qase_name_limit_by_a_lot"
+    case_id: 1234
+  - title: "TestSuite.test_another_long_one"
+    case_id: 5678
