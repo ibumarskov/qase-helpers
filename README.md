@@ -33,7 +33,7 @@ Every setting can be supplied in three ways. When a setting is given in more tha
 2. Environment variable, for example `QASE_HELPER_PROJECT=DEMO`.
 3. YAML config file. The default is `./qase-helper.yaml`; override it with `--config/-c PATH` or `QASE_HELPER_CONFIG`.
 
-See [`qase-helper.example.yaml`](qase-helper.example.yaml) for an annotated example.
+See [`qase-helper.example.yaml`](https://github.com/ibumarskov/qase-helpers/blob/main/qase-helper.example.yaml) for an annotated example.
 A missing default config file is fine; an explicitly given path that does not
 exist is an error, and so are unknown sections or keys in the file.
 
@@ -124,7 +124,7 @@ the command fails **before calling the Qase API** and lists every offending test
 name. Cases for such tests have to be created in Qase manually and added to the map.
 
 The case-ID map is a YAML file keyed by the full JUnit testcase name (see
-[`case-ids.example.yaml`](case-ids.example.yaml)):
+[`case-ids.example.yaml`](https://github.com/ibumarskov/qase-helpers/blob/main/case-ids.example.yaml)):
 
 ```yaml
 cases:

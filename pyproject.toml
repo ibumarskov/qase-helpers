@@ -1,15 +1,19 @@
 [project]
 name = "qase-helper"
 version = "0.1.0"
-description = "CLI for reporting JUnit test results to Qase and managing Qase test runs."
+description = "CLI for reporting JUnit test results to Qase, creating Qase test cases and cleaning up Qase test runs."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Ilya Bumarskov", email = "ibumarskov@gmail.com" }]
 keywords = ["qase", "junit", "testing", "test-management"]
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
     "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Environment :: Console",
@@ -23,6 +27,8 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/ibumarskov/qase-helpers"
+Repository = "https://github.com/ibumarskov/qase-helpers"
+Changelog = "https://github.com/ibumarskov/qase-helpers/blob/main/CHANGELOG.md"
 
 [project.scripts]
 qase-helper = "qase_helper.cli.main:app"
@@ -35,7 +41,7 @@ dev = [
 ]
 
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77"]  # 77+: SPDX `license` and `license-files` (PEP 639)
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

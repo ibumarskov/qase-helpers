@@ -1,0 +1,4 @@
+# Extra files for the source distribution (the wheel contains only the package).
+include CHANGELOG.md qase-helper.example.yaml case-ids.example.yaml
+graft tests
+global-exclude *.py[cod] __pycache__
